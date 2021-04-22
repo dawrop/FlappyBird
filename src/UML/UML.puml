@@ -1,0 +1,170 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'skinparam linetype ortho
+
+abstract class State {
+    + {static} WIDTH: int
+    + {static} HEIGHT: int
+
+    + setTitleAppearance(JLabel): void
+}
+
+class MenuState {
+    - title: JLabel
+    - start: JButton
+    - hScores: JButton
+    - exit: JButton
+
+    + MenuState()
+}
+
+class GameplayState {
+    - buffer: BufferedImage
+    - bird: Bird
+    - pipes: ArrayList<Pipe>
+    + score: static int
+    - gameState: boolean
+
+    + GameplayState()
+    # paintComponent(Graphics): void
+    + update(): void
+    + draw(Graphics2D): void
+    + checkIfCollided(Pipe): void
+    + keyPressed(KeyEvent): void
+    + keyTyped(KeyEvent): void
+    + keyReleased(KeyEvent): void
+}
+
+class GameOverState {
+    - pageTitle: JLabel
+    - scoreLabel: JLabel
+    - nameField: JTextField
+    - submitButton: JButton
+    - highscoreManager: HighscoreManager
+
+    + GameOverState()
+    - check(): boolean
+    - {static} infoBox(): void
+}
+
+class HighscoreState {
+    - pageTitle: JLabel
+    - mainMenu: JButton
+    - highscoreManager: HighscoreManager
+    - highscoresList: JPanel
+    - highscorePosition: JLabel
+    - highscoreNickname: JLabel
+    - highscoreScore: JLabel
+
+    + HighscoreState()
+}
+
+abstract class Entity {
+    # x: float
+    # y: float
+    # WIDTH: float
+    # HEIGHT: float
+    # color: Color
+
+    + drawEntity(Graphics): void
+    + updateEntity(): void
+    + checkCollision(Entity): boolean
+
+    + getX(): float
+    + setX(float): void
+    + getY(): float
+    + setY(float): void
+    + getWIDTH(): float
+    + setWIDTH(float): void
+    + getHEIGHT(): float
+    + setHEIGHT(float): void
+    + getColor(): Color
+    + setColor(Color): void
+
+}
+
+class Bird {
+    # yVelocity: float
+    # gravity: float
+
+    + Bird(float, float)
+    + drawEntity(Graphics): void
+    + updateEntity(): void
+    + jump(): void
+}
+
+class Pipe {
+    + {static} SPEED: float
+    - scored: boolean
+
+    + Pipe(float, float)
+    + isScored(): boolean
+    + setScored(boolean): void
+    + drawEntity(Graphics): void
+    + updateEntity(): void
+    + checkCollision(Entity): boolean
+}
+
+class Score {
+    - score: int
+    - nickname: String
+
+    + Score()
+    + getScore(): int
+    + getNickname(): String
+}
+
+class ScoreComparator {
+    + compare(): int
+}
+
+class HighscoreManager {
+    - scores: ArrayList<Score>
+    - {static} HIGHSCORE_FILE: String
+
+    + HighscoreManager()
+    + getScores(): ArrayList<Score>
+    - sort(): void
+    + addScore(String, int): void
+    + loadScoreFile(): void
+    + updateScoreFile(): void
+}
+
+class JPanel
+class JLabel
+class JButton
+class JTextField
+interface KeyListener
+interface Comparator
+interface Serializable
+
+JPanel <|- State
+State <|-- MenuState
+State <|-- GameplayState
+State <|-- GameOverState
+State <|-- HighscoreState
+KeyListener <|.. GameplayState
+
+Bird --|> Entity
+Pipe --|> Entity
+ScoreComparator ..|> Comparator
+Score ..|> Serializable
+MenuState --> JLabel
+MenuState --> JButton
+GameOverState --> JLabel
+GameOverState --> JTextField
+GameOverState --> JButton
+HighscoreState --> JLabel
+HighscoreState --> JButton
+GameplayState o-- Bird
+GameplayState o-- Pipe
+JPanel <- HighscoreState
+
+HighscoreManager --> Score
+HighscoreManager *-- ScoreComparator
+
+GameOverState *--- HighscoreManager
+HighscoreState ---> HighscoreManager
+
+@enduml

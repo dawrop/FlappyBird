@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+User -> HighscoreManager : addScore
+activate HighscoreManager
+
+HighscoreManager -> HighscoreManager : loadScoreFile
+activate HighscoreManager
+deactivate HighscoreManager
+
+HighscoreManager -> Score : <<createRequest>>
+activate Score
+Score --> HighscoreManager : RequestCreated
+deactivate Score
+
+HighscoreManager -> HighscoreManager : updateScoreFile
+activate HighscoreManager
+deactivate HighscoreManager
+
+
+return
+
+
+@enduml

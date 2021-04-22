@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+User -> GameplayState : paintComponent
+activate GameplayState
+
+GameplayState -> GameplayState : update
+activate GameplayState
+    GameplayState -> Bird : updateEntity
+    activate Bird
+    Bird --> GameplayState :
+    deactivate Bird
+
+    GameplayState -> Pipe : updateEntity
+    activate Pipe
+    Pipe --> GameplayState :
+    deactivate Pipe
+
+    GameplayState -> GameplayState : checkIfCollided
+    activate GameplayState
+    alt Zderzenie ptaszka z przeszkodą
+        GameplayState -> Main : setState
+        activate Main
+        Main --> GameplayState : Gameover State
+        deactivate Main
+
+    else Przeszkoda została ominięta
+        GameplayState -> Pipe : setScored
+        activate Pipe
+        Pipe --> GameplayState : score++
+        deactivate Pipe
+
+    end
+deactivate GameplayState
+
+deactivate GameplayState
+
+GameplayState -> GameplayState : draw
+activate GameplayState
+    loop 4 razy
+        GameplayState -> Pipe : drawEntity
+        activate Pipe
+        Pipe --> GameplayState :
+        deactivate Pipe
+    end
+
+    GameplayState -> Bird : drawEntity
+    activate Bird
+        Bird -> Entity : drawEntity
+        activate Entity
+        Entity --> Bird :
+        deactivate Entity
+    Bird --> GameplayState :
+    deactivate Bird
+deactivate GameplayState
+
+return
+deactivate GameplayState
+
+
+
+
+@enduml
